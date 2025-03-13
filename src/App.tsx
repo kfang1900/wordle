@@ -166,7 +166,7 @@ export default function Wordle() {
 
     const guessColor = Array(LETTER_LEN).fill(null);
     guess.forEach((letter, index) => {
-      if (wordSet.has(letter)) {
+      if (wordSet.has(letter as string)) {
         setCorrectLetterOnly((prevSet) => new Set(prevSet).add(letter));
       }
       if (WORD_TODAY[index] === guess[index]) {
@@ -175,7 +175,7 @@ export default function Wordle() {
       // add colors to displayed guesses
       if (WORD_TODAY[index] === guess[index]) {
         guessColor[index] = 'green-key';
-      } else if (wordSet.has(letter)) {
+      } else if (wordSet.has(letter as string)) {
         guessColor[index] = 'yellow-key';
       } else {
         guessColor[index] = 'normal-key';
@@ -188,7 +188,7 @@ export default function Wordle() {
     );
     setDisplayCol(0);
     setDisplayRow(displayRow + 1);
-    setAlreadyGuessed(new Set([...alreadyGuessed, ...guess]));
+    setAlreadyGuessed(new Set([...alreadyGuessed, ...(guess as string[])]));
   }
   return (
     <>
