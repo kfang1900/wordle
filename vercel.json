@@ -1,6 +1,5 @@
 {
   "rewrites": [
-    { "source": "/wordle", "destination": "/index.html" },
-    { "source": "/wordle/(.*)", "destination": "/$1" }
+    { "source": "/wordle/(.*)", "destination": "/wordle/$1" }
   ]
 }
