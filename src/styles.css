@@ -1,0 +1,42 @@
+.green-key {
+  background-color: green;
+  color: white;
+}
+
+.normal-key {
+  background-color: lightgray;
+  color: black;
+}
+
+.gray-key {
+  background-color: gray;
+  color: white;
+}
+
+.yellow-key {
+  background-color: yellow;
+  color: white;
+}
+
+.empty-key {
+  background-color: white;
+}
+
+.display-row{
+  display: flex;
+}
+
+/*.square {*/
+/*  background: #fff;*/
+/*  border: 1px solid #999;*/
+/*  float: left;*/
+/*  font-size: 24px;*/
+/*  font-weight: bold;*/
+/*  line-height: 34px;*/
+/*  height: 34px;*/
+/*  margin-right: -1px;*/
+/*  margin-top: -1px;*/
+/*  padding: 0;*/
+/*  text-align: center;*/
+/*  width: 34px;*/
+/*}*/
