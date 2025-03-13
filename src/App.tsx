@@ -158,15 +158,17 @@ export default function Wordle() {
     if (displayRow === NUM_DISPLAY_ROWS - 1) {
       return;
     }
-    const guess = guesses[displayRow];
-    if (!guess.every((letter) => letter !== null)) {
+    const guess = guesses[displayRow].filter(
+      (letter): letter is string => letter !== null
+    );
+    if (guess.length < LETTER_LEN) {
       setErrorMessage('Not enough letters');
       return;
     }
 
     const guessColor = Array(LETTER_LEN).fill(null);
     guess.forEach((letter, index) => {
-      if (wordSet.has(letter as string)) {
+      if (wordSet.has(letter)) {
         setCorrectLetterOnly((prevSet) => new Set(prevSet).add(letter));
       }
       if (WORD_TODAY[index] === guess[index]) {
@@ -175,7 +177,7 @@ export default function Wordle() {
       // add colors to displayed guesses
       if (WORD_TODAY[index] === guess[index]) {
         guessColor[index] = 'green-key';
-      } else if (wordSet.has(letter as string)) {
+      } else if (wordSet.has(letter)) {
         guessColor[index] = 'yellow-key';
       } else {
         guessColor[index] = 'normal-key';
