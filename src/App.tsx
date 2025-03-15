@@ -22,7 +22,7 @@ type GameState = {
   targetWord: string;
 };
 
-const SOCKET_URL = 'http://3.107.244.59:3001'; // Change this to your AWS server when deploying
+const SOCKET_URL = 'wss://ws.wordle.kevinfaang.com/socket.io/';
 const socket = io(SOCKET_URL);
 
 export default function Wordle() {
