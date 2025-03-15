@@ -1,42 +1,161 @@
-.green-key {
-  background-color: green;
-  color: white;
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+:root {
+  --background: #ffffff; /* White background */
+  --border: #665460; /* Muted purplish-gray border */
+  --text: #665460; /* Letter color matches border */
+
+  /* 🎨 Keyboard (Faded colors) */
+  --key-dark: #9b9b9b; /* Softer gray for incorrect letters */
+  --key-light: #E0E0E0; /* Lighter gray for unused letters */
+  --key-edge: #A6B5C0; /* Soft bluish-gray shadow */
+
+  /* 🎨 Board (Bolder colors) */
+  --highlight: #F2A900; /* Bolder yellow for misplaced letters */
+  --correct: #28A745; /* Bolder green for correct letters */
+  --empty: #ffffff; /* ✅ PURE White for empty keys */
 }
 
-.normal-key {
-  background-color: lightgray;
-  color: black;
+body {
+  font-family: 'Press Start 2P', sans-serif;
+  background: var(--background);
+  color: var(--text);
+  text-align: center;
+  image-rendering: pixelated;
+  margin-bottom: 30px; /* ✅ Adds space between board & keyboard */
 }
 
-.gray-key {
-  background-color: gray;
-  color: white;
+/* ✅ BOARD STYLING */
+.board {
+  display: grid;
+  grid-template-rows: repeat(6, 65px); /* ✅ Keep rows structured */
+  justify-content: center;
+  gap: 8px;
+  margin: 30px auto; /* ✅ Keeps space between board & keyboard */
 }
 
-.yellow-key {
-  background-color: yellow;
-  color: white;
+/* ✅ Ensure Rows Flow Left-to-Right */
+.board-row {
+  display: flex; /* ✅ Forces letters in row to stay left-to-right */
+  gap: 8px;
+  justify-content: center;
 }
 
-.empty-key {
-  background-color: white;
-}
-
-.display-row{
+/* ✅ Board Keys */
+.board .key {
+  width: 65px;
+  height: 65px;
   display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: bold;
+  text-transform: uppercase;
+  border: 4px solid var(--border);
+  background-color: var(--key-light);
+  color: var(--text);
+  box-shadow: 4px 4px 0px var(--key-edge);
+  text-shadow: 1px 1px var(--border);
+  border-radius: 6px;
 }
 
-/*.square {*/
-/*  background: #fff;*/
-/*  border: 1px solid #999;*/
-/*  float: left;*/
-/*  font-size: 24px;*/
-/*  font-weight: bold;*/
-/*  line-height: 34px;*/
-/*  height: 34px;*/
-/*  margin-right: -1px;*/
-/*  margin-top: -1px;*/
-/*  padding: 0;*/
-/*  text-align: center;*/
-/*  width: 34px;*/
-/*}*/
+/* ✅ Empty Key (No Letter) */
+.board .empty-key {
+  background-color: var(--empty); /* ✅ PURE White */
+  border: 4px solid var(--border);
+  color: transparent;
+}
+
+/* ✅ Wordle Colors (Board) */
+.board .key.correct {
+  background-color: var(--correct); /* Bolder Green */
+  color: white;
+}
+
+.board .key.misplaced {
+  background-color: var(--highlight); /* Bolder Yellow */
+  color: white;
+}
+
+.board .key.incorrect {
+  background-color: var(--key-dark); /* Dark Gray */
+  color: white;
+}
+
+/* ✅ KEYBOARD STYLING */
+.keyboard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px; /* Tighter spacing */
+  margin-top: 20px; /* ✅ More space from the board */
+}
+
+.keyboard-row {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin-bottom: 5px;
+}
+
+.key,
+.special-key {
+  width: 45px; /* Slightly smaller for compact layout */
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px; /* ✅ Thinner font */
+  font-weight: normal; /* ✅ No bold text */
+  text-transform: uppercase;
+  border: 3px solid var(--border); /* ✅ Thinner lines */
+  background-color: var(--key-light);
+  color: var(--text);
+  box-shadow: 3px 3px 0px var(--key-edge);
+  text-shadow: none; /* ✅ Remove strong text shadow */
+  border-radius: 6px;
+}
+
+/* ✅ Wordle Colors (Keyboard) */
+.key.correct {
+  background-color: var(--correct); /* Bolder Green */
+  color: white;
+}
+
+.key.misplaced {
+  background-color: var(--highlight); /* Bolder Yellow */
+  color: white;
+}
+
+.key.incorrect {
+  background-color: var(--key-dark); /* Dark Gray */
+  color: white;
+}
+
+/* ✅ Enlarged Special Keys (Back & Enter) */
+.special-key {
+  width: 80px;
+  height: 50px;
+  font-size: 14px;
+  letter-spacing: 1px;
+  background-color: var(--key-light);
+  color: var(--text);
+  border: 3px solid var(--border); /* ✅ Thinner */
+  box-shadow: 3px 3px 0px var(--key-edge);
+  text-align: center;
+  border-radius: 8px;
+}
+
+/* ✅ Hover Effect ONLY for Keyboard */
+.key:hover,
+.special-key:hover {
+  background-color: var(--key-edge);
+  transform: translateY(-2px);
+  transition: all 0.1s ease-in-out;
+}
+
+/* ✅ REMOVE Hover for Board Keys */
+.board .key:hover {
+  background-color: inherit;
+  transform: none;
+}

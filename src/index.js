@@ -1,15 +1,14 @@
 import React, { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter as Router } from 'react-router-dom';
-import './styles.css';
-
+import { BrowserRouter } from 'react-router-dom';
 import App from './App';
+import './styles.css';
 
 const root = createRoot(document.getElementById('root'));
 root.render(
   <StrictMode>
-    <Router basename="/wordle">
+    <BrowserRouter>
       <App />
-    </Router>
+    </BrowserRouter>
   </StrictMode>
 );

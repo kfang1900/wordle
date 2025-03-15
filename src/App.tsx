@@ -1,148 +1,96 @@
 import { useState, useEffect } from 'react';
+import { io } from 'socket.io-client';
+import Display from './Display';
+import Keyboard from './Keyboard';
+import { ROWS, COLS } from './config';
 
-const WORD_TODAY = 'PICKLE';
-const NUM_DISPLAY_ROWS = 10;
-const LETTER_LEN = 6;
-
-type KeyProps = {
-  char: string;
-  keyStatus: string;
-  onKeyClick: () => void;
+type GameState = {
+  board: string[][];
+  users: (string | null)[][];
+  colors: string[][];
+  keyboardColors: Record<string, string>;
+  history: {
+    user: string;
+    letter?: string;
+    row?: number;
+    col?: number;
+    action?: string;
+  }[];
+  row: number;
+  col: number;
+  winner: string | null;
+  targetWord: string;
 };
 
-function Key({ char, keyStatus, onKeyClick }: KeyProps) {
-  return (
-    <button className={` ${keyStatus}`} onClick={onKeyClick}>
-      {char}
-    </button>
-  );
-}
-
-type KeyboardProps = {
-  onLetterClick: (clickedLetter: string) => void;
-  finalizeGuess: () => void;
-  takeBack: () => void;
-  alreadyGuessed: Set<string>;
-  correctLetterAndPos: Set<string>;
-  correctLetterOnly: Set<string>;
-  wordSet: Set<string>;
-};
-
-function Keyboard({
-  onLetterClick,
-  finalizeGuess,
-  takeBack,
-  alreadyGuessed,
-  correctLetterAndPos,
-  correctLetterOnly,
-  wordSet,
-}: KeyboardProps) {
-  const letters = Array.from({ length: 26 }, (_, i) =>
-    String.fromCharCode(65 + i)
-  ); // A-Z
-  function handleClick(letter: string) {
-    onLetterClick(letter);
-  }
-
-  function getLetterColor(letter: string) {
-    // If letter in both correctLetterAndPos and correctLetterOnly, it should be green
-    if (correctLetterAndPos.has(letter)) {
-      return 'green-key';
-    } else if (correctLetterOnly.has(letter)) {
-      return 'yellow-key';
-    } else if (alreadyGuessed.has(letter) && !wordSet.has(letter)) {
-      return 'gray-key';
-    } else {
-      return 'normal-key';
-    }
-  }
-
-  return (
-    <>
-      <button onClick={takeBack}>Back</button>
-      {letters.map((char, i) => (
-        <Key
-          key={i}
-          char={char}
-          keyStatus={getLetterColor(char)}
-          onKeyClick={() => handleClick(char)}
-        />
-      ))}
-      <button onClick={finalizeGuess}>Enter</button>
-    </>
-  );
-}
-
-type DisplaysProps = {
-  displays: (string | null)[][];
-  guessColors: string[][];
-};
-
-function Display({ displays, guessColors }: DisplaysProps) {
-  return (
-    <>
-      {displays.map((row, rowIndex) => (
-        <div key={rowIndex} className="display-row">
-          {row.map((letter, colIndex) => (
-            <div key={colIndex} className={guessColors[rowIndex][colIndex]}>
-              {letter}
-            </div>
-          ))}
-        </div>
-      ))}
-    </>
-  );
-}
+const SOCKET_URL = 'http://3.107.244.59:3001'; // Change this to your AWS server when deploying
+const socket = io(SOCKET_URL);
 
 export default function Wordle() {
-  const wordSet = new Set(WORD_TODAY);
-  const [alreadyGuessed, setAlreadyGuessed] = useState(new Set<string>());
-  const [correctLetterAndPos, setCorrectLetterAndPos] = useState<Set<string>>(
-    new Set()
-  );
-  const [correctLetterOnly, setCorrectLetterOnly] = useState<Set<string>>(
-    new Set()
+  const [wordToday, setWordToday] = useState('');
+  const [winner, setWinner] = useState('');
+  const wordSet = new Set(wordToday);
+  const [keyboardColors, setKeyboardColors] = useState<Record<string, string>>(
+    Object.fromEntries(
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map((letter) => [letter, 'normal'])
+    )
   );
 
-  const [guesses, setGuesses] = useState<(string | null)[][]>(
-    Array.from({ length: NUM_DISPLAY_ROWS }, () => Array(LETTER_LEN).fill(null))
+  const [guesses, setGuesses] = useState<string[][]>(
+    Array.from({ length: ROWS }, () => Array(COLS).fill(''))
   );
+
   const [guessColors, setGuessColors] = useState<string[][]>(
-    Array.from({ length: NUM_DISPLAY_ROWS }, () =>
-      Array(LETTER_LEN).fill('empty-key')
-    )
+    Array.from({ length: ROWS }, () => Array(COLS).fill('normal'))
   );
 
   const [displayRow, setDisplayRow] = useState<number>(0);
   const [displayCol, setDisplayCol] = useState<number>(0);
 
+  useEffect(() => {
+    socket.on('gameState', (gameState: GameState) => {
+      setGuesses(gameState.board);
+      setGuessColors(gameState.colors);
+      setKeyboardColors(gameState.keyboardColors);
+      setDisplayRow(gameState.row);
+      setDisplayCol(gameState.col);
+      setWordToday(gameState.targetWord);
+      setWinner(winner ?? '');
+    });
+    return () => {
+      socket.off('gameState');
+    };
+  }, []);
+
   function handleLetterClick(clickedLetter: string) {
-    if (displayCol === LETTER_LEN) {
+    if (displayCol === COLS || displayRow === ROWS || winner) {
       return;
     }
-    setGuesses(
-      guesses.map((row, rowIndex) =>
-        rowIndex === displayRow
-          ? row.map((char, col) => (col === displayCol ? clickedLetter : char))
-          : row
-      )
+
+    const newGuessColors = guessColors.map((row, rowIndex) =>
+      rowIndex === displayRow
+        ? row.map((color, colIndex) =>
+            colIndex === displayCol ? 'normal' : color
+          )
+        : row
     );
-    setDisplayCol(displayCol + 1);
+    console.log(newGuessColors);
+    setGuessColors(newGuessColors);
+
+    socket.emit('addLetter', {
+      letter: clickedLetter,
+      user: 'Kevin',
+      color: 'normal',
+    });
   }
 
   function takeBackKey() {
-    if (displayCol === 0) {
+    console.log('take back', displayRow, displayCol);
+    if (displayCol === 0 || displayRow === ROWS) {
       return;
     }
-    const newDisplayCol = displayCol - 1;
-    setDisplayCol(newDisplayCol);
-    setGuesses(
-      guesses.map((row, rowIndex) =>
-        rowIndex === displayRow
-          ? row.map((char, col) => (col === newDisplayCol ? null : char))
-          : row
-      )
-    );
+    socket.emit('backspace', {
+      user: 'Kevin',
+    });
   }
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -154,43 +102,30 @@ export default function Wordle() {
   }, [errorMessage]);
 
   function finalizeGuess() {
-    // 6 guesses used already
-    if (displayRow === NUM_DISPLAY_ROWS - 1) {
+    if (displayRow === ROWS || winner) {
       return;
     }
     const guess = guesses[displayRow].filter(
-      (letter): letter is string => letter !== null
+      (letter): letter is string => letter !== ''
     );
-    if (guess.length < LETTER_LEN) {
+    if (guess.length < COLS) {
       setErrorMessage('Not enough letters');
       return;
     }
-
-    const guessColor = Array(LETTER_LEN).fill(null);
-    guess.forEach((letter, index) => {
-      if (wordSet.has(letter)) {
-        setCorrectLetterOnly((prevSet) => new Set(prevSet).add(letter));
-      }
-      if (WORD_TODAY[index] === guess[index]) {
-        setCorrectLetterAndPos((prevSet) => new Set(prevSet).add(letter));
-      }
-      // add colors to displayed guesses
-      if (WORD_TODAY[index] === guess[index]) {
-        guessColor[index] = 'green-key';
+    function calcColorForGuessLetter(letter: string, pos: number): string {
+      if (letter === wordToday[pos]) {
+        return 'correct';
       } else if (wordSet.has(letter)) {
-        guessColor[index] = 'yellow-key';
-      } else {
-        guessColor[index] = 'normal-key';
+        return 'misplaced';
       }
-    });
-    setGuessColors(
-      guessColors.map((row, rowIndex) =>
-        rowIndex === displayRow ? guessColor : row
-      )
+      return 'incorrect';
+    }
+
+    const newSubmitColors = guesses[displayRow].map((letter, index) =>
+      calcColorForGuessLetter(letter, index)
     );
-    setDisplayCol(0);
-    setDisplayRow(displayRow + 1);
-    setAlreadyGuessed(new Set([...alreadyGuessed, ...(guess as string[])]));
+
+    socket.emit('submitWord', { user: 'Kevin', submitColors: newSubmitColors });
   }
   return (
     <>
@@ -200,10 +135,7 @@ export default function Wordle() {
         onLetterClick={handleLetterClick}
         finalizeGuess={finalizeGuess}
         takeBack={takeBackKey}
-        alreadyGuessed={alreadyGuessed}
-        correctLetterAndPos={correctLetterAndPos}
-        correctLetterOnly={correctLetterOnly}
-        wordSet={wordSet}
+        keyboardColors={keyboardColors}
       />
     </>
   );
