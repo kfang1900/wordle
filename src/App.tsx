@@ -22,8 +22,9 @@ type GameState = {
   targetWord: string;
 };
 
-const SOCKET_URL = 'wss://ws.wordle.kevinfaang.com/socket.io/';
-const socket = io(SOCKET_URL);
+const socket = io('https://ws.wordle.kevinfaang.com', {
+  transports: ['websocket'],
+});
 
 export default function Wordle() {
   const [wordToday, setWordToday] = useState('');
@@ -46,43 +47,30 @@ export default function Wordle() {
   const [displayRow, setDisplayRow] = useState<number>(0);
   const [displayCol, setDisplayCol] = useState<number>(0);
 
-  // useEffect(() => {
-  //   socket.on('gameState', (gameState: GameState) => {
-  //     setGuesses(gameState.board);
-  //     setGuessColors(gameState.colors);
-  //     setKeyboardColors(gameState.keyboardColors);
-  //     setDisplayRow(gameState.row);
-  //     setDisplayCol(gameState.col);
-  //     setWordToday(gameState.targetWord);
-  //     setWinner(winner ?? '');
-  //   });
-  //   return () => {
-  //     socket.off('gameState');
-  //   };
-  // }, []);
   useEffect(() => {
+    // Setup socket connection and event handlers
     socket.on('connect', () => {
-      console.log('✅ WebSocket connected:', socket.id);
+      console.log('Connected to server');
     });
 
-    socket.on('disconnect', () => {
-      console.log('❌ WebSocket disconnected');
+    socket.on('connect_error', (error) => {
+      console.error('Connection error:', error);
     });
 
     socket.on('gameState', (gameState: GameState) => {
-      console.log('Received gameState:', gameState);
       setGuesses(gameState.board);
       setGuessColors(gameState.colors);
       setKeyboardColors(gameState.keyboardColors);
       setDisplayRow(gameState.row);
       setDisplayCol(gameState.col);
       setWordToday(gameState.targetWord);
-      setWinner(winner ?? '');
+      setWinner(gameState.winner ?? '');
     });
 
+    // Clean up event listeners
     return () => {
       socket.off('connect');
-      socket.off('disconnect');
+      socket.off('connect_error');
       socket.off('gameState');
     };
   }, []);
