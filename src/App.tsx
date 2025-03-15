@@ -46,8 +46,31 @@ export default function Wordle() {
   const [displayRow, setDisplayRow] = useState<number>(0);
   const [displayCol, setDisplayCol] = useState<number>(0);
 
+  // useEffect(() => {
+  //   socket.on('gameState', (gameState: GameState) => {
+  //     setGuesses(gameState.board);
+  //     setGuessColors(gameState.colors);
+  //     setKeyboardColors(gameState.keyboardColors);
+  //     setDisplayRow(gameState.row);
+  //     setDisplayCol(gameState.col);
+  //     setWordToday(gameState.targetWord);
+  //     setWinner(winner ?? '');
+  //   });
+  //   return () => {
+  //     socket.off('gameState');
+  //   };
+  // }, []);
   useEffect(() => {
+    socket.on('connect', () => {
+      console.log('✅ WebSocket connected:', socket.id);
+    });
+
+    socket.on('disconnect', () => {
+      console.log('❌ WebSocket disconnected');
+    });
+
     socket.on('gameState', (gameState: GameState) => {
+      console.log('Received gameState:', gameState);
       setGuesses(gameState.board);
       setGuessColors(gameState.colors);
       setKeyboardColors(gameState.keyboardColors);
@@ -56,7 +79,10 @@ export default function Wordle() {
       setWordToday(gameState.targetWord);
       setWinner(winner ?? '');
     });
+
     return () => {
+      socket.off('connect');
+      socket.off('disconnect');
       socket.off('gameState');
     };
   }, []);
