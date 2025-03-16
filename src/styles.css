@@ -8,6 +8,7 @@
   --key-dark: #9b9b9b; /* Softer gray for incorrect letters */
   --key-light: #E0E0E0; /* Lighter gray for unused letters */
   --key-edge: #A6B5C0; /* Soft bluish-gray shadow */
+  --key-dark-hover: #636363;
 
   --highlight: #F2A900; /* Bolder yellow for misplaced letters */
   --correct: #28A745; /* Bolder green for correct letters */
@@ -89,13 +90,14 @@ body {
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  width: 95%;
+  width: 100%;
   max-width: 600px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 3px;
   margin-top: 20px;
+  padding: 0 3vw;
 }
 
 .keyboard-row {
@@ -138,8 +140,8 @@ body {
 }
 
 .special-key {
-  width: min(80px, 16vw);
-  height: min(50px, 12vw);
+  width: min(70px, 12vw);
+  height: min(50px, 10vw);
   font-size: 14px;
   letter-spacing: 1px;
   background-color: var(--key-light);
@@ -150,10 +152,36 @@ body {
   border-radius: 8px;
 }
 
-.keyboard .key:hover,
-.special-key:hover {
-  background-color: var(--key-edge);
-  transform: translateY(-2px);
-  transition: all 0.1s ease-in-out;
+@media (hover: hover) {
+  .keyboard .key:hover,
+  .special-key:hover {
+    background-color: var(--key-edge);
+    transform: translateY(-2px);
+    transition: all 0.1s ease-in-out;
+  }
 }
 
+@media (hover: hover) {
+  .key.correct:hover {
+    background-color: var(--correct);
+    filter: brightness(1.2);
+  }
+
+  .key.misplaced:hover {
+    background-color: var(--highlight);
+    filter: brightness(1.2);
+  }
+
+  .key.incorrect:hover {
+    background-color: var(--key-dark-hover);
+  }
+}
+
+.board .key span,
+.keyboard .key span {
+  display: inline-block;
+  transform: scaleX(0.85); /* Shrinks letter width */
+  letter-spacing: -1px; /* Pulls letters closer */
+  padding: 0;
+  margin: 0;
+}

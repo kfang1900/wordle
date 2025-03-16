@@ -21,7 +21,7 @@ export default function Keyboard({
         <div key={rowIndex} className="keyboard-row">
           {rowIndex === 2 && (
             <button className="special-key back" onClick={takeBack}>
-              Back
+              &#x2715;
             </button>
           )}
           {keyRow.split('').map((letter, index) => (
@@ -34,7 +34,7 @@ export default function Keyboard({
           ))}
           {rowIndex === 2 && (
             <button className="special-key enter" onClick={finalizeGuess}>
-              Enter
+              &#9786;
             </button>
           )}
         </div>
