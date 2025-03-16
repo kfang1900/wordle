@@ -13,7 +13,7 @@ export default function Display({ displays, guessColors }: DisplaysProps) {
           {row.map((letter, colIndex) => (
             <div
               key={colIndex}
-              className={`key ${letter ? guessColors[rowIndex][colIndex] : 'empty-key'}`}
+              className={`key ${letter ? guessColors[rowIndex][colIndex] : 'empty'}`}
             >
               {letter}
             </div>

@@ -5,15 +5,13 @@
   --border: #665460; /* Muted purplish-gray border */
   --text: #665460; /* Letter color matches border */
 
-  /* 🎨 Keyboard (Faded colors) */
   --key-dark: #9b9b9b; /* Softer gray for incorrect letters */
   --key-light: #E0E0E0; /* Lighter gray for unused letters */
   --key-edge: #A6B5C0; /* Soft bluish-gray shadow */
 
-  /* 🎨 Board (Bolder colors) */
   --highlight: #F2A900; /* Bolder yellow for misplaced letters */
   --correct: #28A745; /* Bolder green for correct letters */
-  --empty: #ffffff; /* ✅ PURE White for empty keys */
+  --empty: #ffffff; /* PURE White for empty keys */
 }
 
 body {
@@ -22,73 +20,82 @@ body {
   color: var(--text);
   text-align: center;
   image-rendering: pixelated;
-  margin-bottom: 30px; /* ✅ Adds space between board & keyboard */
+  margin-bottom: 30px;
+  box-sizing: border-box;
 }
 
-/* ✅ BOARD STYLING */
 .board {
-  display: grid;
-  grid-template-rows: repeat(6, 65px); /* ✅ Keep rows structured */
-  justify-content: center;
-  gap: 8px;
-  margin: 30px auto; /* ✅ Keeps space between board & keyboard */
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 95%;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: min(8px, 1.5vw);
+  margin: 0 auto;
 }
 
-/* ✅ Ensure Rows Flow Left-to-Right */
 .board-row {
-  display: flex; /* ✅ Forces letters in row to stay left-to-right */
-  gap: 8px;
+  display: flex;
   justify-content: center;
+  gap: min(8px, 1.5vw);
+  width: 100%;
+  max-width: 500px;
 }
 
-/* ✅ Board Keys */
 .board .key {
-  width: 65px;
-  height: 65px;
+  width: min(60px, 15vw);
+  height: min(60px, 15vw);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
+  font-size: min(24px, 5vw);
   font-weight: bold;
   text-transform: uppercase;
-  border: 4px solid var(--border);
+  border: min(4px, 0.8vw) solid var(--border);
   background-color: var(--key-light);
   color: var(--text);
-  box-shadow: 4px 4px 0px var(--key-edge);
+  box-shadow: min(4px, 0.8vw) min(4px, 0.8vw) 0 var(--key-edge);
   text-shadow: 1px 1px var(--border);
-  border-radius: 6px;
+  border-radius: min(6px, 1.2vw);
 }
 
-/* ✅ Empty Key (No Letter) */
-.board .empty-key {
-  background-color: var(--empty); /* ✅ PURE White */
-  border: 4px solid var(--border);
+.board .key.empty {
+  background-color: var(--empty);
+  border: min(4px, 0.8vw) solid var(--border);
   color: transparent;
 }
 
-/* ✅ Wordle Colors (Board) */
 .board .key.correct {
-  background-color: var(--correct); /* Bolder Green */
+  background-color: var(--correct);
   color: white;
 }
 
 .board .key.misplaced {
-  background-color: var(--highlight); /* Bolder Yellow */
+  background-color: var(--highlight);
   color: white;
 }
 
 .board .key.incorrect {
-  background-color: var(--key-dark); /* Dark Gray */
+  background-color: var(--key-dark);
   color: white;
 }
 
-/* ✅ KEYBOARD STYLING */
 .keyboard {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 95%;
+  max-width: 600px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3px; /* Tighter spacing */
-  margin-top: 20px; /* ✅ More space from the board */
+  gap: 3px;
+  margin-top: 20px;
 }
 
 .keyboard-row {
@@ -98,64 +105,55 @@ body {
   margin-bottom: 5px;
 }
 
-.key,
-.special-key {
-  width: 45px; /* Slightly smaller for compact layout */
-  height: 50px;
+.key {
+  width: min(35px, 8vw);
+  height: min(50px, 12vw);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px; /* ✅ Thinner font */
-  font-weight: normal; /* ✅ No bold text */
+  font-size: 16px;
+  font-weight: normal;
   text-transform: uppercase;
-  border: 3px solid var(--border); /* ✅ Thinner lines */
+  border: 3px solid var(--border);
   background-color: var(--key-light);
   color: var(--text);
   box-shadow: 3px 3px 0px var(--key-edge);
-  text-shadow: none; /* ✅ Remove strong text shadow */
+  text-shadow: none;
   border-radius: 6px;
 }
 
-/* ✅ Wordle Colors (Keyboard) */
 .key.correct {
-  background-color: var(--correct); /* Bolder Green */
+  background-color: var(--correct);
   color: white;
 }
 
 .key.misplaced {
-  background-color: var(--highlight); /* Bolder Yellow */
+  background-color: var(--highlight);
   color: white;
 }
 
 .key.incorrect {
-  background-color: var(--key-dark); /* Dark Gray */
+  background-color: var(--key-dark);
   color: white;
 }
 
-/* ✅ Enlarged Special Keys (Back & Enter) */
 .special-key {
-  width: 80px;
-  height: 50px;
+  width: min(80px, 16vw);
+  height: min(50px, 12vw);
   font-size: 14px;
   letter-spacing: 1px;
   background-color: var(--key-light);
   color: var(--text);
-  border: 3px solid var(--border); /* ✅ Thinner */
-  box-shadow: 3px 3px 0px var(--key-edge);
+  border: 3px solid var(--border);
+  box-shadow: 3px 3px 0 var(--key-edge);
   text-align: center;
   border-radius: 8px;
 }
 
-/* ✅ Hover Effect ONLY for Keyboard */
-.key:hover,
+.keyboard .key:hover,
 .special-key:hover {
   background-color: var(--key-edge);
   transform: translateY(-2px);
   transition: all 0.1s ease-in-out;
 }
 
-/* ✅ REMOVE Hover for Board Keys */
-.board .key:hover {
-  background-color: inherit;
-  transform: none;
-}
