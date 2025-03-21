@@ -80,11 +80,16 @@ export default function Wordle() {
       setWinner(gameState.winner ?? '');
     });
 
+    socket.on('validation', (message: string) => {
+      setErrorMessage(message);
+    });
+
     // Clean up event listeners
     return () => {
       socket.off('connect');
       socket.off('connect_error');
       socket.off('gameState');
+      socket.off('validation');
     };
   }, []);
 
@@ -136,7 +141,7 @@ export default function Wordle() {
       (letter): letter is string => letter !== ''
     );
     if (guess.length < COLS) {
-      setErrorMessage('Not enough letters');
+      socket.emit('submitWord', { user: 'Kevin', submitColors: [] });
       return;
     }
 
@@ -151,7 +156,7 @@ export default function Wordle() {
       }
     }
     for (const [pos, letter] of [...guess].entries()) {
-      if (newSubmitColors[pos] == 'correct') {
+      if (newSubmitColors[pos] === 'correct') {
         continue;
       }
       guessDict[letter] += 1;
