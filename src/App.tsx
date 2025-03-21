@@ -26,6 +26,7 @@ const socket = io('https://ws.wordle.kevinfaang.com', {
   transports: ['websocket'],
 });
 
+// for localhost
 // const socket = io('http://localhost:3001', {
 //   transports: ['websocket'],
 // });
@@ -154,7 +155,7 @@ export default function Wordle() {
         continue;
       }
       guessDict[letter] += 1;
-      if (wordSet.has(letter) && guessDict[letter] < wordTodayDict[letter]) {
+      if (wordSet.has(letter) && guessDict[letter] <= wordTodayDict[letter]) {
         newSubmitColors[pos] = 'misplaced';
       } else {
         newSubmitColors[pos] = 'incorrect';
