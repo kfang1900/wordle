@@ -22,14 +22,14 @@ type GameState = {
   targetWord: string;
 };
 
-const socket = io('https://ws.wordle.kevinfaang.com', {
-  transports: ['websocket'],
-});
-
-// for localhost
-// const socket = io('http://localhost:3001', {
+// const socket = io('https://ws.wordle.kevinfaang.com', {
 //   transports: ['websocket'],
 // });
+
+// for localhost
+const socket = io('http://localhost:3001', {
+  transports: ['websocket'],
+});
 
 export default function Wordle() {
   const [wordToday, setWordToday] = useState('');
@@ -128,7 +128,7 @@ export default function Wordle() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   useEffect(() => {
     if (errorMessage) {
-      const timer = setTimeout(() => setErrorMessage(null), 2000);
+      const timer = setTimeout(() => setErrorMessage(null), 1400);
       return () => clearTimeout(timer);
     }
   }, [errorMessage]);
@@ -171,7 +171,7 @@ export default function Wordle() {
   }
   return (
     <>
-      {errorMessage && <div>{errorMessage}</div>}
+      {errorMessage && <div className="validation-message">{errorMessage}</div>}
       <Display displays={guesses} guessColors={guessColors} />
       <Keyboard
         onLetterClick={handleLetterClick}
