@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { io } from 'socket.io-client';
 import Display from './Display';
 import Keyboard from './Keyboard';
-import { ROWS, COLS } from './config';
+import { ROWS, COLS, ALPHABET } from './config';
 
 type GameState = {
   board: string[][];
@@ -26,14 +26,16 @@ const socket = io('https://ws.wordle.kevinfaang.com', {
   transports: ['websocket'],
 });
 
+// const socket = io('http://localhost:3001', {
+//   transports: ['websocket'],
+// });
+
 export default function Wordle() {
   const [wordToday, setWordToday] = useState('');
   const [winner, setWinner] = useState('');
   const wordSet = new Set(wordToday);
   const [keyboardColors, setKeyboardColors] = useState<Record<string, string>>(
-    Object.fromEntries(
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map((letter) => [letter, 'normal'])
-    )
+    Object.fromEntries(ALPHABET.split('').map((letter) => [letter, 'normal']))
   );
 
   const [guesses, setGuesses] = useState<string[][]>(
@@ -46,6 +48,16 @@ export default function Wordle() {
 
   const [displayRow, setDisplayRow] = useState<number>(0);
   const [displayCol, setDisplayCol] = useState<number>(0);
+
+  const wordTodayDict: Record<string, number> = useMemo(() => {
+    const dict = Object.fromEntries(
+      ALPHABET.split('').map((letter) => [letter, 0])
+    );
+    for (const letter of wordToday) {
+      dict[letter] += 1;
+    }
+    return dict;
+  }, [wordToday]);
 
   useEffect(() => {
     // Setup socket connection and event handlers
@@ -126,18 +138,28 @@ export default function Wordle() {
       setErrorMessage('Not enough letters');
       return;
     }
-    function calcColorForGuessLetter(letter: string, pos: number): string {
-      if (letter === wordToday[pos]) {
-        return 'correct';
-      } else if (wordSet.has(letter)) {
-        return 'misplaced';
-      }
-      return 'incorrect';
-    }
 
-    const newSubmitColors = guesses[displayRow].map((letter, index) =>
-      calcColorForGuessLetter(letter, index)
+    const newSubmitColors: string[] = Array(COLS).fill('');
+    const guessDict: Record<string, number> = Object.fromEntries(
+      ALPHABET.split('').map((letter) => [letter, 0])
     );
+    for (const [pos, letter] of [...guess].entries()) {
+      if (letter === wordToday[pos]) {
+        guessDict[letter] += 1;
+        newSubmitColors[pos] = 'correct';
+      }
+    }
+    for (const [pos, letter] of [...guess].entries()) {
+      if (newSubmitColors[pos] == 'correct') {
+        continue;
+      }
+      guessDict[letter] += 1;
+      if (wordSet.has(letter) && guessDict[letter] < wordTodayDict[letter]) {
+        newSubmitColors[pos] = 'misplaced';
+      } else {
+        newSubmitColors[pos] = 'incorrect';
+      }
+    }
 
     socket.emit('submitWord', { user: 'Kevin', submitColors: newSubmitColors });
   }

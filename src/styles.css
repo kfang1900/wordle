@@ -3,9 +3,9 @@
 :root {
   --background: #ffffff; /* White background */
   --border: #665460; /* Muted purplish-gray border */
-  --text: #665460; /* Letter color matches border */
+  --text: #000000; /* Letter color matches border */
 
-  --key-dark: #9b9b9b; /* Softer gray for incorrect letters */
+  --key-dark: #737373; /* Softer gray for incorrect letters */
   --key-light: #E0E0E0; /* Lighter gray for unused letters */
   --key-edge: #A6B5C0; /* Soft bluish-gray shadow */
   --key-dark-hover: #636363;
@@ -114,7 +114,7 @@ body {
   align-items: center;
   justify-content: center;
   font-size: 16px;
-  font-weight: normal;
+  font-weight: bold;
   text-transform: uppercase;
   border: 3px solid var(--border);
   background-color: var(--key-light);
@@ -162,17 +162,17 @@ body {
 }
 
 @media (hover: hover) {
-  .key.correct:hover {
+  .keyboard .key.correct:hover {
     background-color: var(--correct);
     filter: brightness(1.2);
   }
 
-  .key.misplaced:hover {
+  .keyboard .key.misplaced:hover {
     background-color: var(--highlight);
     filter: brightness(1.2);
   }
 
-  .key.incorrect:hover {
+  .keyboard .key.incorrect:hover {
     background-color: var(--key-dark-hover);
   }
 }

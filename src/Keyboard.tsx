@@ -20,8 +20,8 @@ export default function Keyboard({
       {letters.map((keyRow, rowIndex) => (
         <div key={rowIndex} className="keyboard-row">
           {rowIndex === 2 && (
-            <button className="special-key back" onClick={takeBack}>
-              &#x2715;
+            <button className="special-key enter" onClick={finalizeGuess}>
+              ⏎
             </button>
           )}
           {keyRow.split('').map((letter, index) => (
@@ -33,8 +33,8 @@ export default function Keyboard({
             />
           ))}
           {rowIndex === 2 && (
-            <button className="special-key enter" onClick={finalizeGuess}>
-              &#9786;
+            <button className="special-key back" onClick={takeBack}>
+              &#x2715;
             </button>
           )}
         </div>

@@ -8,8 +8,6 @@ export default function Display({ displays, guessColors }: DisplaysProps) {
     <div className="board">
       {displays.map((row, rowIndex) => (
         <div key={rowIndex} className="board-row">
-          {' '}
-          {/* ✅ Keeps letters left-to-right */}
           {row.map((letter, colIndex) => (
             <div
               key={colIndex}
