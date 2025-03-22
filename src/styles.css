@@ -120,14 +120,14 @@ body {
 .keyboard-row {
   display: flex;
   justify-content: center;
-  gap: 4px;
+  gap: 5px;
   margin-bottom: 2px;
 }
 
 .key {
   border: none;
   width: min(35px, 8vw);
-  height: min(50px, 12vw);
+  height: min(55px, 13vw);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -156,8 +156,8 @@ body {
 
 .special-key {
   border: none;
-  width: min(70px, 12vw);
-  height: min(50px, 10vw);
+  width: min(70px, 13vw);
+  height: min(55px, 13vw);
   font-size: 14px;
   letter-spacing: 1px;
   background-color: var(--key-light);

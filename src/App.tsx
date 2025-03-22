@@ -22,14 +22,14 @@ type GameState = {
   targetWord: string;
 };
 
-// const socket = io('https://ws.wordle.kevinfaang.com', {
-//   transports: ['websocket'],
-// });
-
-// for localhost
-const socket = io('http://localhost:3001', {
+const socket = io('https://ws.wordle.kevinfaang.com', {
   transports: ['websocket'],
 });
+
+// for localhost
+// const socket = io('http://localhost:3001', {
+//   transports: ['websocket'],
+// });
 
 export default function Wordle() {
   const [wordToday, setWordToday] = useState('');
