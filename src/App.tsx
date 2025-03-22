@@ -128,7 +128,7 @@ export default function Wordle() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   useEffect(() => {
     if (errorMessage) {
-      const timer = setTimeout(() => setErrorMessage(null), 1400);
+      const timer = setTimeout(() => setErrorMessage(null), 1500);
       return () => clearTimeout(timer);
     }
   }, [errorMessage]);
@@ -171,7 +171,13 @@ export default function Wordle() {
   }
   return (
     <>
-      {errorMessage && <div className="validation-message">{errorMessage}</div>}
+      {errorMessage && (
+        <div
+          className={`validation-message ${errorMessage.includes('🦙') ? 'winner-message' : ''}`}
+        >
+          {errorMessage}
+        </div>
+      )}
       <Display displays={guesses} guessColors={guessColors} />
       <Keyboard
         onLetterClick={handleLetterClick}

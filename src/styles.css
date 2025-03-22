@@ -7,7 +7,7 @@
 
   --key-dark: #737373; /* Softer gray for incorrect letters */
   --key-light: #E0E0E0; /* Lighter gray for unused letters */
-  --key-edge: #A6B5C0; /* Soft bluish-gray shadow */
+  --key-edge: #C5E0FA; /* Soft bluish-gray shadow */
   --key-dark-hover: #636363;
 
   --highlight: #F2A900; /* Bolder yellow for misplaced letters */
@@ -16,14 +16,20 @@
 }
 
 .validation-message {
-  font-size: 2rem; /* Makes emojis and text bigger */
-  padding: 10px 15px 20px; /* Top, horizontal, bottom padding */
-  margin-bottom: 15px; /* Additional space if needed */
+  font-size: 1rem; /* Makes emojis and text bigger */
+  padding: 20px 15px 20px; /* Top, horizontal, bottom padding */
   z-index: 100; /* Ensures message appears on top of other elements */
   position: relative; /* or absolute/fixed depending on your layout */
   background-color: white; /* Adds white background */
   border-radius: 8px; /* Optional: rounds corners */
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Optional: adds subtle shadow */
+  max-width: 300px; /* Sets maximum width for the message */
+  margin-left: auto; /* Centers the message horizontally */
+  margin-right: auto; /* Centers the message horizontally */
+}
+
+.validation-message.winner-message {
+  font-size: 3rem;
 }
 
 body {
@@ -67,17 +73,17 @@ body {
   font-size: min(24px, 5vw);
   font-weight: bold;
   text-transform: uppercase;
-  border: min(4px, 0.8vw) solid var(--border);
+  border: min(3px, 0.6vw) solid var(--border);
   background-color: var(--key-light);
   color: var(--text);
-  box-shadow: min(4px, 0.8vw) min(4px, 0.8vw) 0 var(--key-edge);
+  box-shadow: min(3px, 0.6vw) min(4px, 0.8vw) 0 var(--key-edge);
   text-shadow: 1px 1px var(--border);
   border-radius: min(6px, 1.2vw);
 }
 
 .board .key.empty {
   background-color: var(--empty);
-  border: min(4px, 0.8vw) solid var(--border);
+  border: min(3px, 0.6vw) solid var(--border);
   color: transparent;
 }
 
@@ -119,6 +125,7 @@ body {
 }
 
 .key {
+  border: none;
   width: min(35px, 8vw);
   height: min(50px, 12vw);
   display: flex;
@@ -148,6 +155,7 @@ body {
 }
 
 .special-key {
+  border: none;
   width: min(70px, 12vw);
   height: min(50px, 10vw);
   font-size: 14px;
