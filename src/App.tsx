@@ -20,6 +20,7 @@ type GameState = {
   col: number;
   winner: string | null;
   targetWord: string;
+  gamesPlayed: number;
 };
 
 const socket = io('https://ws.wordle.kevinfaang.com', {
@@ -60,6 +61,8 @@ export default function Wordle() {
     return dict;
   }, [wordToday]);
 
+  const [gamesPlayed, setGamesPlayed] = useState<number | null>(null);
+
   useEffect(() => {
     // Setup socket connection and event handlers
     socket.on('connect', () => {
@@ -78,6 +81,7 @@ export default function Wordle() {
       setDisplayCol(gameState.col);
       setWordToday(gameState.targetWord);
       setWinner(gameState.winner ?? '');
+      setGamesPlayed(gameState.gamesPlayed);
     });
 
     socket.on('validation', (message: string) => {
@@ -171,6 +175,7 @@ export default function Wordle() {
   }
   return (
     <>
+      <div className="games-played">{gamesPlayed} games played</div>
       {errorMessage && (
         <div
           className={`validation-message ${errorMessage.includes('🦙') ? 'winner-message' : ''}`}

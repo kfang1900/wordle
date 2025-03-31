@@ -1,4 +1,4 @@
-export type KeyProps = {
+type KeyProps = {
   char: string;
   keyColor: string;
   onKeyClick: () => void;

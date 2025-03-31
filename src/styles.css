@@ -15,6 +15,10 @@
   --empty: #ffffff; /* PURE White for empty keys */
 }
 
+.games-played {
+  padding: 10px 15px 20px;
+}
+
 .validation-message {
   font-size: 1rem; /* Makes emojis and text bigger */
   padding: 20px 15px 20px; /* Top, horizontal, bottom padding */
@@ -44,7 +48,7 @@ body {
 
 .board {
   position: fixed;
-  top: 20px;
+  top: 45px;
   left: 50%;
   transform: translateX(-50%);
   width: 95%;

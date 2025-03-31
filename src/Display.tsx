@@ -1,4 +1,4 @@
-export type DisplaysProps = {
+type DisplaysProps = {
   displays: (string | null)[][];
   guessColors: string[][];
 };

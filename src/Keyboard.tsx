@@ -1,6 +1,6 @@
 import Key from './Key';
 
-export type KeyboardProps = {
+type KeyboardProps = {
   onLetterClick: (clickedLetter: string) => void;
   finalizeGuess: () => void;
   takeBack: () => void;
