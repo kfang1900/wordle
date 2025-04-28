@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
 import Display from './Display';
 import Keyboard from './Keyboard';
@@ -33,9 +33,7 @@ const socket = io('https://ws.wordle.kevinfaang.com', {
 // });
 
 export default function Wordle() {
-  const [wordToday, setWordToday] = useState('');
   const [winner, setWinner] = useState('');
-  const wordSet = new Set(wordToday);
   const [keyboardColors, setKeyboardColors] = useState<Record<string, string>>(
     Object.fromEntries(ALPHABET.split('').map((letter) => [letter, 'normal']))
   );
@@ -50,16 +48,6 @@ export default function Wordle() {
 
   const [displayRow, setDisplayRow] = useState<number>(0);
   const [displayCol, setDisplayCol] = useState<number>(0);
-
-  const wordTodayDict: Record<string, number> = useMemo(() => {
-    const dict = Object.fromEntries(
-      ALPHABET.split('').map((letter) => [letter, 0])
-    );
-    for (const letter of wordToday) {
-      dict[letter] += 1;
-    }
-    return dict;
-  }, [wordToday]);
 
   const [gamesPlayed, setGamesPlayed] = useState<number | null>(null);
 
@@ -79,7 +67,6 @@ export default function Wordle() {
       setKeyboardColors(gameState.keyboardColors);
       setDisplayRow(gameState.row);
       setDisplayCol(gameState.col);
-      setWordToday(gameState.targetWord);
       setWinner(gameState.winner ?? '');
       setGamesPlayed(gameState.gamesPlayed);
     });
@@ -114,7 +101,6 @@ export default function Wordle() {
 
     socket.emit('addLetter', {
       letter: clickedLetter,
-      user: 'Kevin',
       color: 'normal',
     });
   }
@@ -124,15 +110,13 @@ export default function Wordle() {
     if (displayCol === 0 || displayRow === ROWS) {
       return;
     }
-    socket.emit('backspace', {
-      user: 'Kevin',
-    });
+    socket.emit('backspace');
   }
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   useEffect(() => {
     if (errorMessage) {
-      const timer = setTimeout(() => setErrorMessage(null), 1500);
+      const timer = setTimeout(() => setErrorMessage(null), 3000);
       return () => clearTimeout(timer);
     }
   }, [errorMessage]);
@@ -145,33 +129,11 @@ export default function Wordle() {
       (letter): letter is string => letter !== ''
     );
     if (guess.length < COLS) {
-      socket.emit('submitWord', { user: 'Kevin', submitColors: [] });
+      socket.emit('submitWord');
       return;
     }
 
-    const newSubmitColors: string[] = Array(COLS).fill('');
-    const guessDict: Record<string, number> = Object.fromEntries(
-      ALPHABET.split('').map((letter) => [letter, 0])
-    );
-    for (const [pos, letter] of [...guess].entries()) {
-      if (letter === wordToday[pos]) {
-        guessDict[letter] += 1;
-        newSubmitColors[pos] = 'correct';
-      }
-    }
-    for (const [pos, letter] of [...guess].entries()) {
-      if (newSubmitColors[pos] === 'correct') {
-        continue;
-      }
-      guessDict[letter] += 1;
-      if (wordSet.has(letter) && guessDict[letter] <= wordTodayDict[letter]) {
-        newSubmitColors[pos] = 'misplaced';
-      } else {
-        newSubmitColors[pos] = 'incorrect';
-      }
-    }
-
-    socket.emit('submitWord', { user: 'Kevin', submitColors: newSubmitColors });
+    socket.emit('submitWord');
   }
   return (
     <>
